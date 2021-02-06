@@ -1,6 +1,7 @@
 # jQuery Movie App
 
-A simple movie app with jQuery and OMDB api based on the tutorial: [Build A JavaScript & jQuery Movie Info App in 30 Minutes](https://youtu.be/YsPqjYGauns)
+A simple movie app with jQuery and OMDB api based on the tutorial:
+[Build A JavaScript & jQuery Movie Info App in 30 Minutes](https://youtu.be/YsPqjYGauns)
 
 ## Resources
 
