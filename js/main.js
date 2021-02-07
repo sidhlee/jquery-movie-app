@@ -89,7 +89,10 @@ $(document).ready(() => {
     renderMovies(movies);
   });
 
-  renderMovies(fakeMovies);
+  // load movies by default
+  if (window.location.pathname === '/index.html') {
+    renderMovies(fakeMovies);
+  }
 });
 
 async function getMovies(searchText) {
@@ -108,20 +111,13 @@ async function getMovies(searchText) {
 }
 
 function renderMovies(movies = []) {
-  const movieHtmls = movies.map(
-    (movie) => `
-        <div class="col-md-6 col-lg-4 mb-3">
-          <div class="card h-100">
-            <img class="card-img-top" src="${movie.Poster}" alt="${movie.Title}">
-            <div class="card-body d-flex flex-column justify-content-between">
-              <h5 class="card-title">${movie.Title}</h5> 
-              <a onClick="viewMovieInfo('${movie.imdbID}')" class="btn btn-primary align-self-end" href="#">Movie Details</a> 
-            </div>
-          </div>
-        </div>`
+  const source = $('#movies-template').html();
+  const template = Handlebars.compile(source);
+  const movieHtmls = movies.map(({ Poster, Title, imdbID }) =>
+    template({ Poster, Title, imdbID })
   );
 
-  $('#movies').html(movieHtmls.join(''));
+  $('#movies').html(movieHtmls); // you can pass an array to $.html()
 }
 
 function viewMovieInfo(id) {
@@ -133,40 +129,14 @@ function viewMovieInfo(id) {
 async function getMovie() {
   const movieId = sessionStorage.getItem('movieId');
   const movie = await $.get(
-    // shorthand for $.ajax(getOptions)
     `http://www.omdbapi.com/?apikey=${process.env.ODMB_API}&i=${movieId}`
   );
-  console.log(movie);
   return movie;
 }
 
 function renderMovie(movie = []) {
-  const movieHtml = `
-      <div class="row">
-        <div class="col-md-4">
-          <img src="${movie.Poster}" class="img-thumbnail" alt="${movie.Title}"/>
-        </div>
-        <div class="col-md-8">
-          <h2>${movie.Title}</h2>
-          <ul class="list-group">
-            <li class="list-group-item"><strong>Genre:</strong> ${movie.Genre} </li>
-            <li class="list-group-item"><strong>Released:</strong> ${movie.Released} </li>
-            <li class="list-group-item"><strong>Rated:</strong> ${movie.Rated} </li>
-            <li class="list-group-item"><strong>imdb Rating:</strong> ${movie.imdbRating} </li>
-            <li class="list-group-item"><strong>Director:</strong> ${movie.Director} </li>
-            <li class="list-group-item"><strong>Writer:</strong> ${movie.Writer} </li>
-            <li class="list-group-item"><strong>Actors:</strong> ${movie.Actors} </li>
-          </ul>
-        </div>
-      </div>
-      <div class="row mt-3">
-        <div class="col">
-          <h3>Plot</h3>
-          <p>${movie.Plot}</p>
-          <a href="https://imdb.com/title/${movie.imdbID}" target="_blank" class="btn btn-primary">View imdb</a>
-          <a href="index.html" class="btn btn-dark">Go Back To Search</a>
-        </div>
-      </div>      
-    `;
+  const source = $('#movie-template').html();
+  const template = Handlebars.compile(source);
+  const movieHtml = template({ ...movie });
   $('#movie').html(movieHtml);
 }

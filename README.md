@@ -65,7 +65,55 @@ const data = await $.get(
 Especially when you have to manipulate DOM (as oppose to just traversing DOM or adding event listeners).  
 You will see the initial markup, then jQuery filling up the placeholder with data-populated htmls.
 
-You can try to pre-render as much as possible so that jQuery only need to fill the content within predefined space as oppose to inserting the whole section.
+### Use Handlebars for templating
+
+Advantages include:
+
+- Keep the markups inside html files -> separate presentation from logic. cleaner js code
+- IDE syntax highlighting & correct Emmet (you get className instead of class inside .js files)
+
+`index.html`
+
+```html
+<div class="container">
+  <div id="movies" class="row"></div>
+</div>
+
+<!-- Templates -->
+<script id="movies-template" type="text/x-handlebars-template">
+  <div class='col-md-6 col-lg-4 mb-3'>
+    <div class='card h-100'>
+      <img class='card-img-top' src='{{Poster}}' alt='{{Title}}' />
+      <div class='card-body d-flex flex-column justify-content-between'>
+        <h5 class='card-title'>
+          {{Title}}
+        </h5>
+        <a
+          onClick='viewMovieInfo('{{imdbID}}')'
+          class='btn btn-primary align-self-end'
+          href='#'
+        >
+          Movie Details
+        </a>
+      </div>
+    </div>
+  </div>
+</script>
+```
+
+`main.js`
+
+```js
+function renderMovies(movies = []) {
+  const source = $('#movies-template').html(); // get html from template
+  const template = Handlebars.compile(source); // create new html-generator function
+  const movieHtmls = movies.map(
+    ({ Poster, Title, imdbID }) => template({ Poster, Title, imdbID }) // pass context to generate html
+  );
+
+  $('#movies').html(movieHtmls); // you can pass an array to $.html()
+}
+```
 
 ## jQuery Workflow
 
@@ -83,7 +131,7 @@ You can try to pre-render as much as possible so that jQuery only need to fill t
    - return API data, usually in object format or an array of objects
 5. Write render functions
    - pass API data
-   - map it into a html template string.
+   - map it into a html template string. (or use Handlebars to generate them)
    - insert the dom string into the placeholder with `$(placeholder).html(items.join(" "))`
 
 ## Resources
