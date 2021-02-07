@@ -82,9 +82,6 @@ const fakeMovies = [
 ];
 
 $(document).ready(() => {
-  console.log('main.js loaded');
-  const $movieTemplate = $('script[data-template="movie-item');
-
   $('#searchForm').on('submit', async (e) => {
     e.preventDefault();
     const searchText = $('#searchText').val();
@@ -118,7 +115,7 @@ function renderMovies(movies = []) {
             <img class="card-img-top" src="${movie.Poster}" alt="${movie.Title}">
             <div class="card-body d-flex flex-column justify-content-between">
               <h5 class="card-title">${movie.Title}</h5> 
-              <a onClick="movieSelected('${movie.imdbID}')" class="btn btn-primary align-self-end" href="#">Movie Details</a> 
+              <a onClick="viewMovieInfo('${movie.imdbID}')" class="btn btn-primary align-self-end" href="#">Movie Details</a> 
             </div>
           </div>
         </div>`
@@ -127,7 +124,7 @@ function renderMovies(movies = []) {
   $('#movies').html(movieHtmls.join(''));
 }
 
-function movieSelected(id) {
+function viewMovieInfo(id) {
   sessionStorage.setItem('movieId', id);
   window.location = 'movie.html';
   return false;
@@ -162,11 +159,11 @@ function renderMovie(movie = []) {
           </ul>
         </div>
       </div>
-      <div className="row">
-        <div className="card">
+      <div class="row mt-3">
+        <div class="col">
           <h3>Plot</h3>
           <p>${movie.Plot}</p>
-          <a href="https://imdb.com/title/${movie.imdbID} target="_blank" class="btn btn-primary">View imdb</a>
+          <a href="https://imdb.com/title/${movie.imdbID}" target="_blank" class="btn btn-primary">View imdb</a>
           <a href="index.html" class="btn btn-dark">Go Back To Search</a>
         </div>
       </div>      
